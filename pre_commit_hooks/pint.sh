@@ -46,24 +46,9 @@ do
     fi
 done;
 
-# Run the command on each file
-echo -e "${txtgrn}  $exec_command fix${args}${txtrst}"
-php_errors_found=false
-error_message=""
-for path in "${files[@]}"
-do
-    ${exec_command} ${args} ${path} 1> /dev/null
-    if [ $? -ne 0 ]; then
-        error_message+="  - ${txtylw}${path}${txtrst}\n"
-        php_errors_found=true
-    fi
-done;
+${exec_command} ${args} ${files[@]}
 
-# There is currently debate about exit codes in php-cs-fixer
-# https://github.com/FriendsOfPHP/PHP-CS-Fixer/issues/1211
-if [ "$php_errors_found" = true ]; then
-    echo -en "\n${txtylw}${title} updated the following files:${txtrst}\n"
-    echo -en "${error_message}"
+if [ $? -ne 0 ]; then
     echo -en "\n${bldred}Please review and commit.${txtrst}\n"
     exit 1
 fi
